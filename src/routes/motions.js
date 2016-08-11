@@ -1,8 +1,5 @@
-const path = require('path')
-const LOG_PREFIX = `"${path.basename(__filename)}":`
-const log = require('../logger')
-const info = log.info.bind(log, LOG_PREFIX)
-const warn = log.warn.bind(log, LOG_PREFIX)
+const info = require('debug')('ha:routes:motions:info')
+const warn = require('debug')('ha:routes:motions:warn')
 
 import {Router} from 'express'
 import Ack from '../db/models/ack'

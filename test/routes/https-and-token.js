@@ -21,8 +21,8 @@ describe('Home route tests', () => {
       .then(() => factory.create('user'))
       .then(user => {
         shared.user = user
-        config.authPublicKey = fs.readFileSync(path.join(__dirname, '/../keys/public_key.pem'))
-        shared.token = `Bearer ${jwt.sign(user.toJSON(), fs.readFileSync(path.join(__dirname, '/../keys/private_key.pem')), {
+        config.authPublicKey = fs.readFileSync(path.join(__dirname, '../keys/public_key.pem'))
+        shared.token = `Bearer ${jwt.sign(user.toJSON(), fs.readFileSync(path.join(__dirname, '../keys/private_key.pem')), {
           algorithm: 'RS256',
           issuer: 'urn:home-automation/login',
           audience: 'urn:home-automation/*',

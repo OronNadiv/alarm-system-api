@@ -1,10 +1,8 @@
-const path = require('path')
-const LOG_PREFIX = `"${path.basename(__filename)}":`
-const log = require('./logger')
-const error = log.error.bind(log, LOG_PREFIX)
+const error = require('debug')('ha:config:error')
 
-import knexPgCustomSchema from 'knex-pg-customschema'
 import fs from 'fs'
+import knexPgCustomSchema from 'knex-pg-customschema'
+import path from 'path'
 
 const config = {production: process.env.NODE_ENV && process.env.NODE_ENV.toUpperCase() === 'PRODUCTION'}
 
