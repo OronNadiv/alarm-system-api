@@ -36,7 +36,7 @@
     "express": ">=4.5 <5",
     "http-as-promised": "^1",
     "jsonwebtoken": "^7",
-    "jwt-generator": "^2",
+    "jwt-generator": ">=2.0.5 <3",
     "knex": "^0.11",
     "knex-pg-customschema": "^1",
     "moment": ">=2.11.2 <3",
