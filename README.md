@@ -1,7 +1,10 @@
-# Home Automation - Alarm System Backend API
-This backend server allows you to manage the alarm system from remote.
-The server receives motions from the raspberry client's motion sensors.
-In case the alarm is armed and a motion is deleted, the server can activates/deactivates the siren, start capturing photos, trigger notifications such as emails, phone calls or text messages, and more.
+# Home Automation - Alarm System API
+Back-end server that handles apis for the alarm system. Main functions are:
+* It saves the alarm state (armed or not armed).
+* It receives reports from the [motion sensor raspberry pi clients][motion-client-url]] when motion is detected.
+* It will turn the siren if motion is detected while the alarm is armed.
+* It will send emails, sms and make phone calls when motion is detected while alarm is armed.
+* It will ask the [camera api server][camera-url] to take photos when motion is detected while alarm is armed.
 
 [![JavaScript Style Guide][standard-image]][standard-url]
 [![Dependencies][dependencies-image]][dependencies-url]
@@ -20,8 +23,8 @@ __AUTH\_PUBLIC\_KEY__ (required): content of auth server's publickey.
 __DATABASE\_URL__ (required):  url to postgres database.  Default: `postgres://postgres:@localhost/home_automation`  
 __KEEP\_HISTORY\_IN\_DAYS__ (required): days to keep history in database.  Default: `30`  
 __LOGIN\_URL__ (required): url to the [authentication][auth-url] server. Default: if NODE_ENV = `production` => `none`, otherwise: `http://localhost:3001`  
-__MOTION\_DETECTED\_SUBJECT__ (required): the subject of the email that will be sent in case a motion has been detected while the alarm is armed.  Default: `ALERT - Motion has been detected!`  
-__MOTION\_DETECTED\_TEXT__ (required): the subject of the email that will be sent in case a motion has been detected while the alarm is armed.  Default:
+__MOTION\_DETECTED\_SUBJECT__ (required): the subject of the email that will be sent when motion has been detected while the alarm is armed.  Default: `ALERT - Motion has been detected!`  
+__MOTION\_DETECTED\_TEXT__ (required): the subject of the email that will be sent when motion has been detected while the alarm is armed.  Default:
 ```
 Motion has been detected while the alarm system is armed.
 
@@ -35,7 +38,7 @@ __POSTGRESPOOLMAX__ (required): postgres pool maximum size.  Default: `10`
 __POSTGRESPOOLLOG__ (required): postgres pool log. Values: `true`/`false`. Default: `true`  
 __PRIVATE\_KEY__ (required): Generated private key.  Public key should be shared with the [authentication][auth-url] server. See [here][private-public-keys-url].  
 __REDIS\_URL__ / __REDISCLOUD\_URL__ (required): redis url.  Default: if NODE_ENV = `production` => `none`, otherwise: `redis://localhost:6379`  
-__SENSOR\_MAY\_BE\_FAULTY\_IN_DAYS__ (required): after the specified number of days, if a motion sensor has not reported of a movement, the sensor will be considered as "faulty". Default: `7`  
+__SENSOR\_MAY\_BE\_FAULTY\_IN_DAYS__ (required): after the specified number of days, if the motion sensor has not reported of a movement, the sensor will be considered as "faulty". Default: `7`  
 __UI\_URL__ (required): url to the [UI][ui-url] server. Default: if NODE_ENV = `production` => `none`, otherwise: `http://localhost:3000`
 
 ### License
@@ -59,6 +62,9 @@ __UI\_URL__ (required): url to the [UI][ui-url] server. Default: if NODE_ENV = `
 [client-installation-instruction-url]: https://oronnadiv.github.io/home-automation/#installation-instructions-for-the-raspberry-pi-clients
 [server-installation-instruction-url]: https://oronnadiv.github.io/home-automation/#installation-instructions-for-the-server-micro-services
 [private-public-keys-url]: https://oronnadiv.github.io/home-automation/#generating-private-and-public-keys
+
+[motion-client-url]: https://github.com/OronNadiv/motion-sensor-raspberry-client
+[siren-client-url]: https://github.com/OronNadiv/alarm-siren-raspberry-client
 
 [alarm-url]: https://github.com/OronNadiv/alarm-api
 [auth-url]: https://github.com/OronNadiv/authentication-api
