@@ -1,11 +1,11 @@
 const verbose = require('debug')('ha:db:models:ack:verbose')
 
-import {createClient} from 'redis'
-import Bookshelf from '../bookshelf'
-import config from '../../config'
-import emitter from 'socket.io-emitter'
-import moment from 'moment'
-import Promise from 'bluebird'
+const createClient = require('redis').createClient
+const Bookshelf = require('../bookshelf')
+const config = require('../../config')
+const emitter = require('socket.io-emitter')
+const moment = require('moment')
+const Promise = require('bluebird')
 
 const ack = Bookshelf.Model.extend({
   tableName: 'acks',
@@ -50,4 +50,4 @@ ack.fetchLatest = (sensorName, options) => {
     .fetch(options)
 }
 
-export default ack
+module.exports = ack

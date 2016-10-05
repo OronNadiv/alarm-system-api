@@ -1,12 +1,12 @@
 const verbose = require('debug')('ha:db:models:toggle:verbose')
 
-import {createClient} from 'redis'
-import _ from 'underscore'
-import Bookshelf from '../bookshelf'
-import config from '../../config'
-import emitter from 'socket.io-emitter'
-import Promise from 'bluebird'
-import user from './user'
+const _ = require('underscore')
+const Bookshelf = require('../bookshelf')
+const config = require('../../config')
+const createClient = require('redis').createClient
+const emitter = require('socket.io-emitter')
+const Promise = require('bluebird')
+const user = require('./user')
 
 const toggle = Bookshelf.Model.extend({
   tableName: 'toggles',
@@ -19,20 +19,20 @@ const toggle = Bookshelf.Model.extend({
       let client = createClient(config.redisUrl)
 
       return Promise
-          .try(() => {
-            verbose('sending message to client. group_id:', options.by.group_id)
+        .try(() => {
+          verbose('sending message to client. group_id:', options.by.group_id)
 
-            const io = emitter(client)
+          const io = emitter(client)
 
-            io.of(`/${options.by.group_id}-trusted`).to('alarm-sensors').emit('TOGGLE_CREATED', model.toJSON())
-            io.of(`/${options.by.group_id}`).to('alarm-sensors').emit('TOGGLE_CREATED', _.pick(model.toJSON(), 'is_armed'))
-          })
-          .finally(() => {
-            if (client) {
-              client.quit()
-              client = null
-            }
-          })
+          io.of(`/${options.by.group_id}-trusted`).to('alarm-sensors').emit('TOGGLE_CREATED', model.toJSON())
+          io.of(`/${options.by.group_id}`).to('alarm-sensors').emit('TOGGLE_CREATED', _.pick(model.toJSON(), 'is_armed'))
+        })
+        .finally(() => {
+          if (client) {
+            client.quit()
+            client = null
+          }
+        })
     })
     this.on('updating', () => {
       throw new Error('Motion cannot be changed after creation.')
@@ -52,4 +52,4 @@ toggle.fetchLatest = options => {
     .fetch(options)
 }
 
-export default toggle
+module.exports = toggle

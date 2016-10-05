@@ -1,3 +1,3 @@
-import Model from '../../db/models/toggle'
+const Model = require('../../src/db/models/toggle')
 
-export default factory => factory.define('toggle', Model, {})
+module.exports = factory => factory.define('toggle', Model, {})

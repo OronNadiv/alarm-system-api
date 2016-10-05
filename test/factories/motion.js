@@ -1,3 +1,3 @@
-import Model from '../../db/models/motion'
+const Model = require('../../src/db/models/motion')
 
-export default factory => factory.define('motion', Model, {})
+module.exports = factory => factory.define('motion', Model, {})

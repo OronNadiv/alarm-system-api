@@ -1,10 +1,10 @@
-import path from 'path'
-import Promise from 'bluebird'
-import jwt from 'jsonwebtoken'
-import fs from 'fs'
-import Factory from '../factory'
-import config from '../../config'
-import Request from './request'
+const path = require('path')
+const Promise = require('bluebird')
+const jwt = require('jsonwebtoken')
+const fs = require('fs')
+const Factory = require('../factory')
+const config = require('../../src/config')
+const Request = require('./request')
 
 const factory = Factory()
 const shared = {}
@@ -14,7 +14,8 @@ let request
 describe('Home route tests', () => {
   before(() => {
     config.production = true
-    return Promise.resolve(Request)
+    return Promise
+      .resolve(Request)
       .then(req => {
         request = req
       })

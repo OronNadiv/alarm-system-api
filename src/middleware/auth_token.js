@@ -1,9 +1,9 @@
 const info = require('debug')('ha:middleware:auth_token:info')
 
-import jwt from 'jsonwebtoken'
-import config from '../config'
+const jwt = require('jsonwebtoken')
+const config = require('../config')
 
-export default (req, res, next) => {
+module.exports = (req, res, next) => {
   function sendUnauthenticated () {
     info('Sending unauthorized - 401.')
     return res.sendStatus(401)

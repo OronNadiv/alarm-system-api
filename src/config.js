@@ -1,8 +1,8 @@
 const error = require('debug')('ha:config:error')
 
-import fs from 'fs'
-import knexPgCustomSchema from 'knex-pg-customschema'
-import path from 'path'
+const fs = require('fs')
+const knexPgCustomSchema = require('knex-pg-customschema')
+const path = require('path')
 
 const config = {production: process.env.NODE_ENV && process.env.NODE_ENV.toUpperCase() === 'PRODUCTION'}
 
@@ -73,4 +73,4 @@ config.motionDetectedText = process.env.MOTION_DETECTED_TEXT ||
 Sensor name: {sensor_name}`
 config.sensorMayBeFaultyInDays = parseInt(process.env.SENSOR_MAY_BE_FAULTY_IN_DAYS || 7, 10)
 
-export default config
+module.exports = config

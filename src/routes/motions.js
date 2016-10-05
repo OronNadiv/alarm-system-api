@@ -1,13 +1,13 @@
 const info = require('debug')('ha:routes:motions:info')
 const warn = require('debug')('ha:routes:motions:warn')
 
-import {Router} from 'express'
-import Ack from '../db/models/ack'
-import moment from 'moment'
-import Motions from '../db/collections/motions'
-import Motion from '../db/models/motion'
-import Promise from 'bluebird'
-import Toggle from '../db/models/toggle'
+const Router = require('express').Router
+const Ack = require('../db/models/ack')
+const moment = require('moment')
+const Motions = require('../db/collections/motions')
+const Motion = require('../db/models/motion')
+const Promise = require('bluebird')
+const Toggle = require('../db/models/toggle')
 
 const router = new Router()
 
@@ -76,7 +76,7 @@ router.post('/motions', (req, res, next) => {
                 warn(
                   'Motion detected.  Last motion was detected at: ',
                   motion.get('created_at'),
-                  'skipping this motion. to prevent from having too much noise.'
+                  'skipping this motion. to prevent = require(having too much noise.'
                 )
                 return
               }
@@ -88,4 +88,4 @@ router.post('/motions', (req, res, next) => {
     .catch(next)
 })
 
-export default router
+module.exports = router

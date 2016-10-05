@@ -1,10 +1,10 @@
 const verbose = require('debug')('ha:routes:toggles:verbose')
 
-import {Router} from 'express'
-import _ from 'underscore'
-import Promise from 'bluebird'
-import Toggles from '../db/collections/toggles'
-import Toggle from '../db/models/toggle'
+const Router = require('express').Router
+const _ = require('underscore')
+const Promise = require('bluebird')
+const Toggles = require('../db/collections/toggles')
+const Toggle = require('../db/models/toggle')
 
 const router = new Router()
 
@@ -54,4 +54,4 @@ router.post('/toggles', (req, res, next) => {
     .catch(next)
 })
 
-export default router
+module.exports = router

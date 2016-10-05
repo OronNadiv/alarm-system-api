@@ -1,5 +1,7 @@
-import configuration from '../src/db/knex'
+const configuration = require('../src/db/knex')
 
-export const development = configuration
-export const test = configuration
-export const production = configuration
+module.exports = {
+  development: configuration,
+  test: configuration,
+  production: configuration
+}

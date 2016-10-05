@@ -1,8 +1,8 @@
-import {Router} from 'express'
-import config from '../config'
+const Router = require('express').Router
+const config = require('../config')
 
 const router = new Router()
 
 router.get('/', (req, res) => res.redirect(config.uiUrl))
 
-export default router
+module.exports = router

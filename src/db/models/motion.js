@@ -2,14 +2,14 @@ const verbose = require('debug')('ha:db:models:motion:verbose')
 const info = require('debug')('ha:db:models:motion:info')
 const error = require('debug')('ha:db:models:motion:error')
 
-import {createClient} from 'redis'
-import Bookshelf from '../bookshelf'
-import config from '../../config'
-import emitter from 'socket.io-emitter'
-import JWTGenerator from 'jwt-generator'
-import Promise from 'bluebird'
-import request from 'http-as-promised'
-import url from 'url'
+const createClient = require('redis')
+const Bookshelf = require('../bookshelf')
+const config = require('../../config')
+const emitter = require('socket.io-emitter')
+const JWTGenerator = require('jwt-generator')
+const Promise = require('bluebird')
+const request = require('http-as-promised')
+const url = require('url')
 
 const jwtGenerator = new JWTGenerator(config.loginUrl, config.privateKey, false, 'urn:home-automation/alarm')
 const motion = Bookshelf.Model.extend({
@@ -111,4 +111,4 @@ motion.fetchLatest = (sensorName, options) =>
     qb.orderBy('created_at', 'DESC')
   }).fetch(options)
 
-export default motion
+module.exports = motion

@@ -1,7 +1,7 @@
-import Bookshelf from '../bookshelf'
-import '../../config'
+const Bookshelf = require('../bookshelf')
+require('../../config')
 
-export default Bookshelf.Model.extend({
+module.exports = Bookshelf.Model.extend({
   tableName: 'public.users',
   hasTimestamps: true,
   hidden: ['password_hash', 'failed_login_attempts', 'email'],

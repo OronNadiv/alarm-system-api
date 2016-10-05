@@ -1,11 +1,11 @@
-import {Factory} from 'factory-girl'
-import BookshelfAdapter from 'factory-girl-bookshelf'
-import Chance from 'chance'
-import motion from './factories/motion'
-import Promise from 'bluebird'
-import toggle from './factories/toggle'
-import user from './factories/user'
-import 'should'
+const Factory = require('factory-girl').Factory
+const BookshelfAdapter = require('factory-girl-bookshelf')
+const Chance = require('chance')
+const motion = require('./factories/motion')
+const Promise = require('bluebird')
+const toggle = require('./factories/toggle')
+const user = require('./factories/user')
+require('should')
 
 const chance = new Chance()
 
@@ -23,7 +23,7 @@ BookshelfAdapter.prototype.destroy = (doc, Model, cb) => {
   return doc.destroy().nodeify(cb)
 }
 
-export default () => {
+module.exports = () => {
   const factory = new Factory()
 
   factory.setAdapter(new BookshelfAdapter())

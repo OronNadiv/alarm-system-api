@@ -1,4 +1,4 @@
-export default (req, res, next) => {
+module.exports = (req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache')
   res.set('Pragma', 'no-cache')
   res.set('X-Frame-Options', 'DENY')

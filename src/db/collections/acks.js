@@ -1,7 +1,7 @@
-import Ack from '../models/ack'
-import Bookshelf from '../bookshelf'
+const Ack = require('../models/ack')
+const Bookshelf = require('../bookshelf')
 
-export default Bookshelf.Collection.extend({
+module.exports = Bookshelf.Collection.extend({
   tableName: 'acks',
   model: Ack,
   fetch: function (options) {

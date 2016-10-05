@@ -6,15 +6,15 @@ echo $MIGRATIONS_FILE
 
 if test $1 = "up"
 then
-  babel-node ./node_modules/.bin/knex-pg-customschema --schema alarm --knexfile $MIGRATIONS_FILE
-  babel-node ./node_modules/.bin/knex migrate:latest --debug --knexfile $MIGRATIONS_FILE
+  node ./node_modules/.bin/knex-pg-customschema --schema alarm --knexfile $MIGRATIONS_FILE
+  node ./node_modules/.bin/knex migrate:latest --debug --knexfile $MIGRATIONS_FILE
 elif test $1 = "down"
 then
-  babel-node ./node_modules/.bin/knex-pg-customschema --schema alarm --knexfile $MIGRATIONS_FILE
-  babel-node ./node_modules/.bin/knex migrate:rollback --debug --knexfile $MIGRATIONS_FILE
+  node ./node_modules/.bin/knex-pg-customschema --schema alarm --knexfile $MIGRATIONS_FILE
+  node ./node_modules/.bin/knex migrate:rollback --debug --knexfile $MIGRATIONS_FILE
 elif test $1 = "make"
 then
-  babel-node ./node_modules/.bin/knex migrate:make --debug --knexfile $MIGRATIONS_FILE $2
+  node ./node_modules/.bin/knex migrate:make --debug --knexfile $MIGRATIONS_FILE $2
 else
   echo "invalid migration command"
 fi

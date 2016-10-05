@@ -1,8 +1,8 @@
-import express from '../../initializations/express'
-import supertest from 'supertest-as-promised'
-import Promise from 'bluebird'
+const express = require('../../src/initializations/express')
+const supertest = require('supertest-as-promised')
+const Promise = require('bluebird')
 
-export default Promise
+module.exports = Promise
   .try(express.initialize)
   .get('express')
   .then(supertest)

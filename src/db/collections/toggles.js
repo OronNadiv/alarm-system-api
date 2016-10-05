@@ -1,7 +1,12 @@
-import Promise from 'bluebird'
-import Bookshelf from '../bookshelf'
-import config from '../../config'
-import Toggle from '../models/toggle'
+const Promise = require('bluebird')
+const Bookshelf = require('../bookshelf')
+const config = require('../../config')
+const Toggle = require('../models/toggle')
+
+const second = 1000
+const minute = second * 60
+const hour = minute * 60
+const day = hour * 24
 
 const toggles = Bookshelf.Collection.extend({
   tableName: 'toggles',
@@ -9,21 +14,24 @@ const toggles = Bookshelf.Collection.extend({
 })
 
 toggles.purge = () => {
-  const second = 1000
-  const minute = second * 60
-  const hour = minute * 60
-  const day = hour * 24
-
-  setInterval(() => {
-    Promise
-      .try(() => toggles.forge().query(qb => {
+  Promise
+    .resolve(toggles
+      .forge()
+      .query((qb) => {
         const d = new Date()
         d.setDate(d.getDate() - config.keepHistoryInDays)
         qb.where('created_at', '<', d)
-      }).fetch())
-      .get('models')
-      .map(model => model.destroy())
-  }, day)
+      })
+      .fetch()
+    )
+    .get('models')
+    .map((model) => {
+      return model.destroy()
+    })
+    .delay(day)
+    .then(() => {
+      return toggles.purge()
+    })
 }
 
-export default toggles
+module.exports = toggles

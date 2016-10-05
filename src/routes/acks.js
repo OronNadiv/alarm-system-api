@@ -1,6 +1,6 @@
-import {Router} from 'express'
-import Acks from '../db/collections/acks'
-import Promise from 'bluebird'
+const Router = require('express').Router
+const Acks = require('../db/collections/acks')
+const Promise = require('bluebird')
 
 const router = new Router()
 
@@ -18,4 +18,4 @@ router.get('/acks', (req, res, next) => {
     .catch(next)
 })
 
-export default router
+module.exports = router

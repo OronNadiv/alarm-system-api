@@ -1,8 +1,8 @@
 const verbose = require('debug')('ha:db:postgres:verbose')
 const error = require('debug')('ha:db:postgres:error')
 
-import pg from 'pg'
-import config from '../config'
+const pg = require('pg')
+const config = require('../config')
 
 const db = new pg.Client(config.postgres)
 
@@ -16,4 +16,4 @@ db.connect(err => {
   verbose('Connected to postgres db')
 })
 
-export default db
+module.exports = db
