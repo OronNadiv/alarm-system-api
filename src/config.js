@@ -8,6 +8,8 @@ const config = {production: process.env.NODE_ENV && process.env.NODE_ENV.toUpper
 
 config.port = process.env.PORT || 3002
 
+config.skipSSL = process.env.SKIP_SSL && process.env.SKIP_SSL.toUpperCase() === 'TRUE'
+
 config.authPublicKey = process.env.AUTH_PUBLIC_KEY || (config.production ? null : fs.readFileSync(path.join(__dirname, '../test/keys/public_key.pem')))
 if (!config.authPublicKey) {
   error(
