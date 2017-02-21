@@ -19,7 +19,8 @@ const toggle = Bookshelf.Model.extend({
       let client = createClient(config.redisUrl)
 
       return Promise
-        .try(() => {
+        .resolve(model.load(['requestedBy']))
+        .then(() => {
           verbose('sending message to client. group_id:', options.by.group_id)
 
           const io = emitter(client)
