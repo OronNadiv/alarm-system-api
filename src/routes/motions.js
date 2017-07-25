@@ -43,47 +43,47 @@ router.post('/motions', (req, res, next) => {
 
   Promise.all([
     Promise
-        .resolve(Ack.fetchLatest(sensorName, options))
-        .then(ack => {
-          ack = ack || Ack.forge()
-          // will update the 'updated_at' value.
-          req.body.group_id = options.by.group_id
-          return ack.save(req.body, options)
-        }),
+      .resolve(Ack.fetchLatest(sensorName, options))
+      .then(ack => {
+        ack = ack || Ack.forge()
+        // will update the 'updated_at' value.
+        req.body.group_id = options.by.group_id
+        return ack.save(req.body, options)
+      }),
     Promise
-        .resolve(Toggle.fetchLatest(options))
-        .then(toggle => {
-          if (!toggle || !toggle.get('is_armed')) {
-            info(
-              'Motion detected.  Alarm is not armed.  Ignoring.  Sensor name:',
-              req.body.sensor_name
-            )
-            return
-          }
-          if (moment().diff(toggle.get('created_at'), 'minutes') < 2) {
-            info(
-              'Motion detected.  Alarm was armed less than two minutes ago.  Ignoring.  Sensor name:',
-              req.body.sensor_name,
-              'Armed at:',
-              toggle.get('created_at')
-            )
-            return
-          }
-          return Promise
-            .resolve(Motion.fetchLatest(sensorName, options))
-            .then(motion => {
-              if (motion && moment().diff(motion.get('created_at'), 'seconds') < 30) {
-                warn(
-                  'Motion detected.  Last motion was detected at: ',
-                  motion.get('created_at'),
-                  'skipping this motion. to prevent = require(having too much noise.'
-                )
-                return
-              }
-              return Motion.forge().save(req.body, options)
-            })
-        })
-        .then(() => res.sendStatus(201))
+      .resolve(Toggle.fetchLatest(options))
+      .then(toggle => {
+        if (!toggle || !toggle.get('is_armed')) {
+          info(
+            'Motion detected.  Alarm is not armed.  Ignoring.  Sensor name:',
+            req.body.sensor_name
+          )
+          return
+        }
+        if (moment().diff(toggle.get('created_at'), 'minutes') < 2) {
+          info(
+            'Motion detected.  Alarm was armed less than two minutes ago.  Ignoring.  Sensor name:',
+            req.body.sensor_name,
+            'Armed at:',
+            toggle.get('created_at')
+          )
+          return
+        }
+        return Promise
+          .resolve(Motion.fetchLatest(sensorName, options))
+          .then(motion => {
+            if (motion && moment().diff(motion.get('created_at'), 'seconds') < 30) {
+              warn(
+                'Motion detected.  Last motion was detected at: ',
+                motion.get('created_at'),
+                'skipping this motion. to prevent = require(having too much noise.'
+              )
+              return
+            }
+            return Motion.forge().save(req.body, options)
+          })
+      })
+      .then(() => res.sendStatus(201))
   ])
     .catch(next)
 })

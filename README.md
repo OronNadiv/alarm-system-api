@@ -66,10 +66,10 @@ __UI\_URL__ (required): url to the [UI][ui-url] server. Default: if NODE_ENV = `
 [motion-client-url]: https://github.com/OronNadiv/motion-sensor-raspberry-client
 [siren-client-url]: https://github.com/OronNadiv/alarm-siren-raspberry-client
 
-[alarm-url]: https://github.com/OronNadiv/alarm-api
+[alarm-url]: https://github.com/OronNadiv/alarm-system-api
 [auth-url]: https://github.com/OronNadiv/authentication-api
 [camera-url]: https://github.com/OronNadiv/camera-api
-[garage-url]: https://github.com/OronNadiv/garage-api
+[garage-url]: https://github.com/OronNadiv/garage-door-api
 [notifications-url]: https://github.com/OronNadiv/notifications-api
 [push-url]: https://github.com/OronNadiv/push-api
 [storage-url]: https://github.com/OronNadiv/storage-api
