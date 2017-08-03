@@ -4,34 +4,33 @@ const warn = require('debug')('ha:routes:motions:warn')
 const Router = require('express').Router
 const Ack = require('../db/models/ack')
 const moment = require('moment')
-const Motions = require('../db/collections/motions')
 const Motion = require('../db/models/motion')
 const Promise = require('bluebird')
 const Toggle = require('../db/models/toggle')
 
 const router = new Router()
 
-router.get('/motions', (req, res, next) => {
-  const count = parseInt(req.query.count || 20, 10)
-  const days = parseInt(req.query.days || 1, 10)
-  const options = {by: req.client}
-
-  if (!req.client.is_trusted) {
-    return res.sendStatus(403)
-  }
-
-  return Motions.forge()
-    .query(qb => {
-      qb.where('group_id', '=', options.by.group_id)
-      qb.where('created_at', '>', moment().subtract(days, 'days').toDate())
-      qb.orderBy('created_at', 'DESC')
-      qb.limit(count)
-    })
-    .fetch(options)
-    .call('toJSON')
-    .then(res.json.bind(res))
-    .catch(next)
-})
+// router.get('/motions', (req, res, next) => {
+//   const count = parseInt(req.query.count || 20, 10)
+//   const days = parseInt(req.query.days || 1, 10)
+//   const options = {by: req.client}
+//
+//   if (!req.client.is_trusted) {
+//     return res.sendStatus(403)
+//   }
+//
+//   return Motions.forge()
+//     .query(qb => {
+//       qb.where('group_id', '=', options.by.group_id)
+//       qb.where('created_at', '>', moment().subtract(days, 'days').toDate())
+//       qb.orderBy('created_at', 'DESC')
+//       qb.limit(count)
+//     })
+//     .fetch(options)
+//     .call('toJSON')
+//     .then(res.json.bind(res))
+//     .catch(next)
+// })
 
 router.post('/motions', (req, res, next) => {
   if (!req.body.sensor_name) {

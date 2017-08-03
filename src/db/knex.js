@@ -1,5 +1,8 @@
 const config = require('../config')
 const path = require('path')
+const pg = require('pg')
+
+pg.defaults.ssl = !config.production
 
 module.exports = {
   // debug: true,

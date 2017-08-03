@@ -3,7 +3,7 @@ const info = require('debug')('ha:initializations:express:info')
 const warn = require('debug')('ha:initializations:express:warn')
 const error = require('debug')('ha:initializations:express:error')
 
-const acks = require('./../routes/acks')
+// const acks = require('./../routes/acks')
 const authToken = require('./../middleware/auth_token')
 const bodyParser = require('body-parser')
 const config = require('./../config')
@@ -38,7 +38,7 @@ module.exports = {
     app.use(xHeaders)
     app.use(authToken)
 
-    app.use(acks)
+    // app.use(acks)
     app.use(motions)
     app.use(toggles)
 

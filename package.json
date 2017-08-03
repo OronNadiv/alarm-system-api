@@ -23,6 +23,7 @@
     "postinstall": "npm run migrate up"
   },
   "dependencies": {
+    "apollo-server-express": "^1.0.5",
     "bluebird": "^3",
     "body-parser": "^1",
     "bookshelf": "^0.10",
@@ -31,6 +32,8 @@
     "debug": "^2",
     "diehard": "^1",
     "express": "^4.5",
+    "graphql": "^0.10.5",
+    "graphql-tools": "^1.1.0",
     "http-as-promised": "^1",
     "jsonwebtoken": "^7",
     "jwt-generator": "^2.0.5",
