@@ -6,11 +6,9 @@ echo $MIGRATIONS_FILE
 
 if test $1 = "up"
 then
-  node ./node_modules/.bin/knex-pg-customschema --schema alarm --knexfile $MIGRATIONS_FILE
   node ./node_modules/.bin/knex migrate:latest --debug --knexfile $MIGRATIONS_FILE
 elif test $1 = "down"
 then
-  node ./node_modules/.bin/knex-pg-customschema --schema alarm --knexfile $MIGRATIONS_FILE
   node ./node_modules/.bin/knex migrate:rollback --debug --knexfile $MIGRATIONS_FILE
 elif test $1 = "make"
 then

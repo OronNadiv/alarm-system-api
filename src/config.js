@@ -1,7 +1,6 @@
 const error = require('debug')('ha:config:error')
 
 const fs = require('fs')
-const knexPgCustomSchema = require('knex-pg-customschema')
 const path = require('path')
 
 const config = {production: process.env.NODE_ENV && process.env.NODE_ENV.toUpperCase() === 'PRODUCTION'}
@@ -33,7 +32,7 @@ config.postgresPool = {
   min: parseInt(process.env.POSTGRESPOOLMIN || 2, 10),
   max: parseInt(process.env.POSTGRESPOOLMAX || 10, 10),
   log: process.env.POSTGRESPOOLLOG === 'true',
-  afterCreate: knexPgCustomSchema('alarm')
+  afterCreate: (connection, cb) => connection.query(`SET SESSION SCHEMA 'alarm';`, cb)
 }
 
 config.redisUrl = process.env.REDIS_URL || process.env.REDISCLOUD_URL || (config.production ? null : 'redis://localhost:6379')
