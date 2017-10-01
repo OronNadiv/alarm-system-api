@@ -1,4 +1,6 @@
 const verbose = require('debug')('ha:db:models:ack:verbose')
+const info = require('debug')('ha:db:models:ack:info')
+const error = require('debug')('ha:db:models:ack:error')
 
 const createClient = require('redis').createClient
 const Bookshelf = require('../bookshelf')
@@ -6,6 +8,10 @@ const config = require('../../config')
 const emitter = require('socket.io-emitter')
 const moment = require('moment')
 const Promise = require('bluebird')
+const md5 = require('md5')
+const PubNub = require('pubnub')
+
+const {publishKey, subscribeKey} = config.pubNub
 
 const ack = Bookshelf.Model.extend({
   tableName: 'acks',
@@ -21,9 +27,11 @@ const ack = Bookshelf.Model.extend({
     })
 
     this.on('saved', (model, attrs, options) => {
+      verbose('sending message to client.', 'group_id:', options.by.group_id)
+
       let client = createClient(config.redisUrl)
 
-      return Promise
+      const promise1 = Promise
         .try(() => {
           verbose('sending message to client. group_id:', options.by.group_id)
 
@@ -36,6 +44,40 @@ const ack = Bookshelf.Model.extend({
             client = null
           }
         })
+
+      const promise2 = new Promise((resolve, reject) => {
+        const authKey = md5(options.by.token)
+        const publisher = new PubNub({
+          publishKey,
+          subscribeKey,
+          authKey,
+          ssl: true
+        })
+
+        const publishConfig = {
+          message: {
+            system: 'ALARM',
+            type: 'ACK_SAVED',
+            payload: model.toJSON()
+          },
+          channel: `${options.by.group_id}-trusted`
+        }
+        publisher.publish(publishConfig, (status) => {
+          switch (status.statusCode) {
+            case 200:
+              info('Publish complete successfully.',
+                'Hashed authKey:', md5(authKey))
+              return resolve()
+            default:
+              error('Publish failed.',
+                'Hashed authKey:', md5(authKey),
+                'status:', status)
+              reject(status)
+          }
+        })
+      })
+
+      return Promise.all([promise1, promise2])
     })
   }
 })

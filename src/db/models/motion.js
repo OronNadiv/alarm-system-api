@@ -11,6 +11,10 @@ const Promise = require('bluebird')
 const request = require('http-as-promised')
 const url = require('url')
 
+const md5 = require('md5')
+const PubNub = require('pubnub')
+const {publishKey, subscribeKey} = config.pubNub
+
 const jwtGenerator = new JWTGenerator(config.loginUrl, config.privateKey, false, 'urn:home-automation/alarm')
 const motion = Bookshelf.Model.extend({
   tableName: 'motions',
@@ -81,9 +85,11 @@ const motion = Bookshelf.Model.extend({
     })
 
     this.on('created', (model, attrs, options) => {
+      verbose('sending message to client. group_id:', options.by.group_id)
+
       let client = createClient(config.redisUrl)
 
-      return Promise
+      const p1 = Promise
         .try(() => {
           verbose('sending message to client. group_id:', options.by.group_id)
 
@@ -97,6 +103,40 @@ const motion = Bookshelf.Model.extend({
             client = null
           }
         })
+
+      const p2 = new Promise((resolve, reject) => {
+        const authKey = md5(options.by.token)
+        const publisher = new PubNub({
+          publishKey,
+          subscribeKey,
+          authKey,
+          ssl: true
+        })
+
+        const publishConfig = {
+          message: {
+            system: 'ALARM',
+            type: 'MOTION_CREATED',
+            payload: model.toJSON()
+          },
+          channel: `${options.by.group_id}-trusted`
+        }
+        publisher.publish(publishConfig, (status) => {
+          switch (status.statusCode) {
+            case 200:
+              info('Publish complete successfully.',
+                'Hashed authKey:', md5(authKey))
+              return resolve()
+            default:
+              error('Publish failed.',
+                'Hashed authKey:', md5(authKey),
+                'status:', status)
+              reject(status)
+          }
+        })
+      })
+
+      return Promise.all([p1, p2])
     })
 
     this.on('updating', () => {

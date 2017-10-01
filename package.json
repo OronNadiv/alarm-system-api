@@ -35,8 +35,10 @@
     "jsonwebtoken": "^7",
     "jwt-generator": "^2.0.5",
     "knex": "^0.12.2",
+    "md5": "^2",
     "moment": "^2.11.2",
     "pg": "^6.4.2",
+    "pubnub": "^4",
     "redis": "^2",
     "socket.io-emitter": "^1",
     "underscore": "^1"

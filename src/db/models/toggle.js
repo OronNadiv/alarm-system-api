@@ -1,4 +1,6 @@
 const verbose = require('debug')('ha:db:models:toggle:verbose')
+const info = require('debug')('ha:db:models:toggle:info')
+const error = require('debug')('ha:db:models:toggle:error')
 
 const _ = require('underscore')
 const Bookshelf = require('../bookshelf')
@@ -7,6 +9,10 @@ const createClient = require('redis').createClient
 const emitter = require('socket.io-emitter')
 const Promise = require('bluebird')
 const user = require('./user')
+
+const md5 = require('md5')
+const PubNub = require('pubnub')
+const { publishKey, subscribeKey } = config.pubNub
 
 const toggle = Bookshelf.Model.extend({
   tableName: 'toggles',
@@ -18,7 +24,7 @@ const toggle = Bookshelf.Model.extend({
     this.on('created', (model, attrs, options) => {
       let client = createClient(config.redisUrl)
 
-      return Promise
+      const p1 = Promise
         .resolve(model.load(['requestedBy']))
         .then(() => {
           verbose('sending message to client. group_id:', options.by.group_id)
@@ -34,6 +40,46 @@ const toggle = Bookshelf.Model.extend({
             client = null
           }
         })
+
+      const authKey = md5(options.by.token)
+      const publisher = new PubNub({
+        publishKey,
+        subscribeKey,
+        authKey,
+        ssl: true
+      })
+
+      const publishMessage = (channel, payload) => {
+        return new Promise((resolve, reject) => {
+          const publishConfig = {
+            message: {
+              system: 'ALARM',
+              type: 'TOGGLE_CREATED',
+              payload
+            },
+            channel
+          }
+          publisher.publish(publishConfig, (status) => {
+            switch (status.statusCode) {
+              case 200:
+                info('Publish complete successfully.',
+                  'Hashed authKey:', md5(authKey))
+                return resolve()
+              default:
+                error('Publish failed.',
+                  'Hashed authKey:', md5(authKey),
+                  'status:', status)
+                reject(status)
+            }
+          })
+        })
+      }
+
+      const p2 = Promise.all([
+        publishMessage(`${options.by.group_id}`, _.pick(model.toJSON(), 'is_armed')),
+        publishMessage(`${options.by.group_id}-trusted`, model.toJSON())
+      ])
+      return Promise.all([p1, p2])
     })
     this.on('updating', () => {
       throw new Error('Motion cannot be changed after creation.')
