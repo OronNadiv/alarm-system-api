@@ -41,6 +41,9 @@ const ack = Bookshelf.Model.extend({
 })
 
 ack.fetchLatest = (sensorName, options) => {
+  verbose('fetchLatest called.',
+    'sensorName:', sensorName,
+    'group_id:', options.by.group_id)
   return ack.forge()
     .query(qb => {
       qb.where('group_id', '=', options.by.group_id)

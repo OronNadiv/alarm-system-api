@@ -1,3 +1,4 @@
+const verbose = require('debug')('ha:routes:motions:verbose')
 const info = require('debug')('ha:routes:motions:info')
 const warn = require('debug')('ha:routes:motions:warn')
 
@@ -45,9 +46,13 @@ router.post('/motions', (req, res, next) => {
     Promise
       .resolve(Ack.fetchLatest(sensorName, options))
       .then(ack => {
+        verbose('fetchLatest complete.',
+          'ack:', !!ack)
         ack = ack || Ack.forge()
         // will update the 'updated_at' value.
         req.body.group_id = options.by.group_id
+        verbose('Saving ack.',
+          'req.body::', req.body)
         return ack.save(req.body, options)
       }),
     Promise
