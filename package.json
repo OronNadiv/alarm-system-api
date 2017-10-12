@@ -33,7 +33,7 @@
     "express": "^4.5",
     "http-as-promised": "^1",
     "jsonwebtoken": "^8.0.1",
-    "jwt-generator": "^2.0.5",
+    "jwt-generator": "^2.0.8",
     "knex": "^0.13.0",
     "moment": "^2.11.2",
     "pg": "^7.3.0",
