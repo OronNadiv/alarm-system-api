@@ -2,14 +2,13 @@ const verbose = require('debug')('ha:db:models:motion:verbose')
 const info = require('debug')('ha:db:models:motion:info')
 const error = require('debug')('ha:db:models:motion:error')
 
-const createClient = require('redis')
 const Bookshelf = require('../bookshelf')
 const config = require('../../config')
-const emitter = require('socket.io-emitter')
 const JWTGenerator = require('jwt-generator')
 const Promise = require('bluebird')
 const request = require('http-as-promised')
 const url = require('url')
+const {publish} = require('home-automation-pubnub').Publisher
 
 const jwtGenerator = new JWTGenerator(config.loginUrl, config.privateKey, false, 'urn:home-automation/alarm')
 const motion = Bookshelf.Model.extend({
@@ -81,22 +80,26 @@ const motion = Bookshelf.Model.extend({
     })
 
     this.on('created', (model, attrs, options) => {
-      let client = createClient(config.redisUrl)
+      verbose('sending message to client. group_id:', options.by.group_id)
 
-      return Promise
-        .try(() => {
-          verbose('sending message to client. group_id:', options.by.group_id)
-
-          const io = emitter(client)
-          io.of(`/${options.by.group_id}`).to('sirens').emit('MOTION_CREATED')
+      return Promise.all([
+        publish({
+          groupId: options.by.group_id,
+          isTrusted: true,
+          system: 'ALARM',
+          type: 'MOTION_CREATED',
+          payload: {},
+          token: options.by.token
+        }),
+        publish({
+          groupId: options.by.group_id,
+          isTrusted: false,
+          system: 'ALARM',
+          type: 'MOTION_CREATED',
+          payload: {},
+          token: options.by.token
         })
-        .catch(err => error('While calling socket io /sirens', err))
-        .finally(() => {
-          if (client) {
-            client.quit()
-            client = null
-          }
-        })
+      ])
     })
 
     this.on('updating', () => {

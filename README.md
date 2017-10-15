@@ -37,7 +37,6 @@ __POSTGRESPOOLMIN__ (required): postgres pool minimum size.  Default: `2`
 __POSTGRESPOOLMAX__ (required): postgres pool maximum size.  Default: `10`  
 __POSTGRESPOOLLOG__ (required): postgres pool log. Values: `true`/`false`. Default: `true`  
 __PRIVATE\_KEY__ (required): Generated private key.  Public key should be shared with the [authentication][auth-url] server. See [here][private-public-keys-url].  
-__REDIS\_URL__ / __REDISCLOUD\_URL__ (required): redis url.  Default: if NODE_ENV = `production` => `none`, otherwise: `redis://localhost:6379`  
 __SENSOR\_MAY\_BE\_FAULTY\_IN_DAYS__ (required): after the specified number of days, if the motion sensor has not reported of a movement, the sensor will be considered as "faulty". Default: `7`  
 __UI\_URL__ (required): url to the [UI][ui-url] server. Default: if NODE_ENV = `production` => `none`, otherwise: `http://localhost:3000`
 

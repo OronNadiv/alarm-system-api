@@ -35,14 +35,6 @@ config.postgresPool = {
   afterCreate: (connection, cb) => connection.query(`SET SESSION SCHEMA 'alarm';`, cb)
 }
 
-config.redisUrl = process.env.REDIS_URL || process.env.REDISCLOUD_URL || (config.production ? null : 'redis://localhost:6379')
-if (!config.redisUrl) {
-  error(
-    'Redis URL could not be found in the environment variable.  Please set \'REDIS_URL\'.'
-  )
-  process.exit(1)
-}
-
 config.loginUrl = process.env.LOGIN_URL || (config.production ? null : 'http://localhost:3001')
 if (!config.loginUrl) {
   error(

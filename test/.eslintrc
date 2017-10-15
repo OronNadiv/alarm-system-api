@@ -1,8 +1,8 @@
 {
-  "globals": {
-    "it": false,
-    "describe": false,
-    "before": false,
-    "after": false
+  "plugins": [
+    "mocha"
+  ],
+  "env": {
+    "mocha": true
   }
 }
