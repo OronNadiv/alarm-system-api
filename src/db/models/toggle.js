@@ -27,7 +27,8 @@ const toggle = Bookshelf.Model.extend({
               system: 'ALARM',
               type: 'TOGGLE_CREATED',
               payload: model.toJSON(),
-              token: options.by.token
+              token: options.by.token,
+              uuid: 'alarm-system-api'
             }),
             publish({
               groupId: options.by.group_id,
@@ -35,7 +36,8 @@ const toggle = Bookshelf.Model.extend({
               system: 'ALARM',
               type: 'TOGGLE_CREATED',
               payload: _.pick(model.toJSON(), 'is_armed'),
-              token: options.by.token
+              token: options.by.token,
+              uuid: 'alarm-system-api'
             })
           ])
         })

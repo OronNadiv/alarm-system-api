@@ -89,7 +89,8 @@ const motion = Bookshelf.Model.extend({
           system: 'ALARM',
           type: 'MOTION_CREATED',
           payload: {},
-          token: options.by.token
+          token: options.by.token,
+          uuid: 'alarm-system-api'
         }),
         publish({
           groupId: options.by.group_id,
@@ -97,7 +98,8 @@ const motion = Bookshelf.Model.extend({
           system: 'ALARM',
           type: 'MOTION_CREATED',
           payload: {},
-          token: options.by.token
+          token: options.by.token,
+          uuid: 'alarm-system-api'
         })
       ])
     })

@@ -31,7 +31,7 @@
     "debug": "^3.1.0",
     "diehard": "^1.5.2",
     "express": "^4.5",
-    "home-automation-pubnub": "^0.3.0",
+    "home-automation-pubnub": "^0.4.0",
     "http-as-promised": "^1",
     "jsonwebtoken": "^8.0.1",
     "jwt-generator": "^2.0.8",

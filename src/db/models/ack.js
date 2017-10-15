@@ -26,7 +26,8 @@ const ack = Bookshelf.Model.extend({
         system: 'ALARM',
         type: 'ACK_SAVED',
         payload: model.toJSON(),
-        token: options.by.token
+        token: options.by.token,
+        uuid: 'alarm-system-api'
       })
     })
   }
