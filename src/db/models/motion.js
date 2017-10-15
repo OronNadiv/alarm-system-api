@@ -4,13 +4,17 @@ const error = require('debug')('ha:db:models:motion:error')
 
 const Bookshelf = require('../bookshelf')
 const config = require('../../config')
-const JWTGenerator = require('jwt-generator')
 const Promise = require('bluebird')
 const request = require('http-as-promised')
 const url = require('url')
 const {publish} = require('home-automation-pubnub').Publisher
-
-const jwtGenerator = new JWTGenerator(config.loginUrl, config.privateKey, false, 'urn:home-automation/alarm')
+const JWTGenerator = require('jwt-generator')
+const jwtGenerator = new JWTGenerator({
+  loginUrl: config.loginUrl,
+  privateKey: config.privateKey,
+  useRetry: false,
+  issuer: 'urn:home-automation/alarm'
+})
 const motion = Bookshelf.Model.extend({
   tableName: 'motions',
   hasTimestamps: true,
@@ -20,14 +24,14 @@ const motion = Bookshelf.Model.extend({
     })
 
     this.on('created', (model, attrs, options) => {
-      const subject = config.motionDetectedSubject.replace(/\{sensor_name}/, model.get('sensor_name'))
-      const text = config.motionDetectedText.replace(/\{sensor_name}/, model.get('sensor_name'))
+      const subject = config.motionDetectedSubject.replace(/{sensor_name}/, model.get('sensor_name'))
+      const text = config.motionDetectedText.replace(/{sensor_name}/, model.get('sensor_name'))
 
       // alarm is armed.
       info('calling notification service. subject:', subject, 'test:', text)
 
       return Promise
-        .resolve(jwtGenerator.makeToken(subject, 'urn:home-automation/notifications', options.by))
+        .resolve(jwtGenerator.makeToken({subject, audience: 'urn:home-automation/notifications', payload: options.by}))
         .then(token => {
           function sendEmail (subject, text) {
             return request({
@@ -82,26 +86,34 @@ const motion = Bookshelf.Model.extend({
     this.on('created', (model, attrs, options) => {
       verbose('sending message to client. group_id:', options.by.group_id)
 
-      return Promise.all([
-        publish({
-          groupId: options.by.group_id,
-          isTrusted: true,
-          system: 'ALARM',
-          type: 'MOTION_CREATED',
-          payload: {},
-          token: options.by.token,
-          uuid: 'alarm-system-api'
-        }),
-        publish({
-          groupId: options.by.group_id,
-          isTrusted: false,
-          system: 'ALARM',
-          type: 'MOTION_CREATED',
-          payload: {},
-          token: options.by.token,
-          uuid: 'alarm-system-api'
+      return Promise
+        .resolve(jwtGenerator.makeToken({
+          subject: `Alarm motion created for group ${options.by.group_id}`,
+          audience: 'urn:home-automation/alarm',
+          payload: options.by
+        }))
+        .then((token) => {
+          return Promise.all([
+            publish({
+              groupId: options.by.group_id,
+              isTrusted: true,
+              system: 'ALARM',
+              type: 'MOTION_CREATED',
+              payload: {},
+              token,
+              uuid: 'alarm-system-api'
+            }),
+            publish({
+              groupId: options.by.group_id,
+              isTrusted: false,
+              system: 'ALARM',
+              type: 'MOTION_CREATED',
+              payload: {},
+              token,
+              uuid: 'alarm-system-api'
+            })
+          ])
         })
-      ])
     })
 
     this.on('updating', () => {

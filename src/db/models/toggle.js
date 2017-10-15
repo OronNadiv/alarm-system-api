@@ -1,9 +1,17 @@
 const verbose = require('debug')('ha:db:models:toggle:verbose')
 
 const _ = require('underscore')
+const config = require('../../config')
 const Bookshelf = require('../bookshelf')
 const Promise = require('bluebird')
 const user = require('./user')
+const JWTGenerator = require('jwt-generator')
+const jwtGenerator = new JWTGenerator({
+  loginUrl: config.loginUrl,
+  privateKey: config.privateKey,
+  useRetry: false,
+  issuer: 'urn:home-automation/alarm'
+})
 
 const {publish} = require('home-automation-pubnub').Publisher
 
@@ -16,8 +24,15 @@ const toggle = Bookshelf.Model.extend({
     })
     this.on('created', (model, attrs, options) => {
       return Promise
-        .resolve(model.load(['requestedBy']))
-        .then(() => {
+        .all([
+          jwtGenerator.makeToken({
+            subject: `Alarm toggle created for group ${options.by.group_id}`,
+            audience: 'urn:home-automation/alarm',
+            payload: options.by
+          }),
+          model.load(['requestedBy'])
+        ])
+        .spread((token) => {
           verbose('sending message to client. group_id:', options.by.group_id)
 
           return Promise.all([
@@ -27,7 +42,7 @@ const toggle = Bookshelf.Model.extend({
               system: 'ALARM',
               type: 'TOGGLE_CREATED',
               payload: model.toJSON(),
-              token: options.by.token,
+              token,
               uuid: 'alarm-system-api'
             }),
             publish({
@@ -36,7 +51,7 @@ const toggle = Bookshelf.Model.extend({
               system: 'ALARM',
               type: 'TOGGLE_CREATED',
               payload: _.pick(model.toJSON(), 'is_armed'),
-              token: options.by.token,
+              token,
               uuid: 'alarm-system-api'
             })
           ])

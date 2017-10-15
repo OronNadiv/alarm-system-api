@@ -1,9 +1,18 @@
 const verbose = require('debug')('ha:db:models:ack:verbose')
 
+const Promise = require('bluebird')
 const Bookshelf = require('../bookshelf')
 const config = require('../../config')
 const moment = require('moment')
 const {publish} = require('home-automation-pubnub').Publisher
+
+const JWTGenerator = require('jwt-generator')
+const jwtGenerator = new JWTGenerator({
+  loginUrl: config.loginUrl,
+  privateKey: config.privateKey,
+  useRetry: false,
+  issuer: 'urn:home-automation/alarm'
+})
 
 const ack = Bookshelf.Model.extend({
   tableName: 'acks',
@@ -20,15 +29,23 @@ const ack = Bookshelf.Model.extend({
     this.on('saved', (model, attrs, options) => {
       verbose('sending message to client. group_id:', options.by.group_id)
 
-      return publish({
-        groupId: options.by.group_id,
-        isTrusted: true,
-        system: 'ALARM',
-        type: 'ACK_SAVED',
-        payload: model.toJSON(),
-        token: options.by.token,
-        uuid: 'alarm-system-api'
-      })
+      return Promise
+        .resolve(jwtGenerator.makeToken({
+          subject: `Alarm toggle created for group ${options.by.group_id}`,
+          audience: 'urn:home-automation/alarm',
+          payload: options.by
+        }))
+        .then((token) => {
+          return publish({
+            groupId: options.by.group_id,
+            isTrusted: true,
+            system: 'ALARM',
+            type: 'ACK_SAVED',
+            payload: model.toJSON(),
+            token: token,
+            uuid: 'alarm-system-api'
+          })
+        })
     })
   }
 })
