@@ -23,12 +23,13 @@ const toggle = Bookshelf.Model.extend({
       model.set('group_id', options.by.group_id)
     })
     this.on('created', (model, attrs, options) => {
+      const {id, group_id} = options.by
       return Promise
         .all([
           jwtGenerator.makeToken({
             subject: `Alarm toggle created for group ${options.by.group_id}`,
             audience: 'urn:home-automation/alarm',
-            payload: options.by
+            payload: {id, group_id}
           }),
           model.load(['requestedBy'])
         ])
