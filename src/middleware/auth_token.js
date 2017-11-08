@@ -9,9 +9,9 @@ module.exports = (req, res, next) => {
     return res.sendStatus(401)
   }
 
-  let token = req.cookies['XSRF-TOKEN']
+  let token
 
-  if (!token && req.headers.authorization) {
+  if (req.headers.authorization) {
     const matched = req.headers.authorization.match(/Bearer (.+)/)
     if (matched.length > 1) {
       token = matched[1]
