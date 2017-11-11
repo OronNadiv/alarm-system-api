@@ -1,5 +1,5 @@
 const express = require('../../src/initializations/express')
-const supertest = require('supertest-as-promised')
+const supertest = require('supertest')
 const Promise = require('bluebird')
 
 module.exports = Promise
