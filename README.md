@@ -70,5 +70,4 @@ __UI\_URL__ (required): url to the [UI][ui-url] server. Default: if NODE_ENV = `
 [camera-url]: https://github.com/OronNadiv/camera-api
 [garage-url]: https://github.com/OronNadiv/garage-door-api
 [notifications-url]: https://github.com/OronNadiv/notifications-api
-[storage-url]: https://github.com/OronNadiv/storage-api
 [ui-url]: https://github.com/OronNadiv/home-automation-ui
