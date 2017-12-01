@@ -6,13 +6,13 @@ echo $MIGRATIONS_FILE
 
 if test $1 = "up"
 then
-  node ./node_modules/.bin/knex migrate:latest --debug --knexfile $MIGRATIONS_FILE
+  node ./node_modules/.bin/knex migrate:latest --knexfile $MIGRATIONS_FILE
 elif test $1 = "down"
 then
-  node ./node_modules/.bin/knex migrate:rollback --debug --knexfile $MIGRATIONS_FILE
+  node ./node_modules/.bin/knex migrate:rollback --knexfile $MIGRATIONS_FILE
 elif test $1 = "make"
 then
-  node ./node_modules/.bin/knex migrate:make --debug --knexfile $MIGRATIONS_FILE $2
+  node ./node_modules/.bin/knex migrate:make --knexfile $MIGRATIONS_FILE $2
 else
   echo "invalid migration command"
 fi
