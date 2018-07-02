@@ -23,7 +23,7 @@ const toggle = Bookshelf.Model.extend({
       model.set('group_id', options.by.group_id)
     })
     this.on('created', (model, attrs, options) => {
-      const {id, group_id} = options.by
+      const {id, group_id} = options.by // eslint-disable-line camelcase
       return Promise
         .all([
           jwtGenerator.makeToken({

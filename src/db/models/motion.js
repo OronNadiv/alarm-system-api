@@ -30,7 +30,7 @@ const motion = Bookshelf.Model.extend({
       // alarm is armed.
       info('calling notification service. subject:', subject, 'test:', text)
 
-      const {id, group_id} = options.by
+      const {id, group_id} = options.by // eslint-disable-line camelcase
       return Promise
         .resolve(jwtGenerator.makeToken({
           subject,
@@ -91,7 +91,7 @@ const motion = Bookshelf.Model.extend({
     this.on('created', (model, attrs, options) => {
       verbose('sending message to client. group_id:', options.by.group_id)
 
-      const {id, group_id} = options.by
+      const {id, group_id} = options.by // eslint-disable-line camelcase
       return Promise
         .resolve(jwtGenerator.makeToken({
           subject: `Alarm motion created for group ${options.by.group_id}`,

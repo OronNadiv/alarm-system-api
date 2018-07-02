@@ -53,7 +53,7 @@ router.post('/motions', (req, res, next) => {
         req.body.group_id = options.by.group_id
         verbose('Saving ack.',
           'req.body::', req.body)
-        return ack.save(req.body, options)
+        return ack.save({updated_at: new Date(), ...req.body}, options)
       }),
     Promise
       .resolve(Toggle.fetchLatest(options))
