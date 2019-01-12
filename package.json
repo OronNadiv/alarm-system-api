@@ -10,8 +10,8 @@
   },
   "license": "AGPL-3.0",
   "engines": {
-    "node": "^8",
-    "npm": "^5"
+    "node": "^10",
+    "npm": "^6"
   },
   "scripts": {
     "cover": "istanbul cover _mocha -- --recursive -t 10000",
